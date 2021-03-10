@@ -3,8 +3,8 @@ require([
       "esri/views/SceneView",
       "esri/Camera",
       "esri/widgets/Home",
-      "esri/layers/ElevationLayer",
-      "dojo/domReady!"], function(WebScene, SceneView, Camera, Home, ElevationLayer) {
+      "esri/widgets/LayerList",
+      "dojo/domReady!"], function(WebScene, SceneView, Camera, Home, LayerList) {
 
     
       //var map = new Map
@@ -19,38 +19,38 @@ require([
       
 var camera = new Camera({
         position: [
-          35, // lon
-          138, // lat
-           1000// elevation in meters
+          138, // lon
+          35, // lat
+           400000// elevation in meters
         ],
-        tilt:18,
+        tilt:20,
         heading: 0
       });
 var camera2 = new Camera({
         position: {
-          x: 4.8,
-          y: 74,
-          z: 1000
+          x: 40.48,
+          y: -3.145,
+          z: 5000000
         },
-        tilt: 22,
+        tilt: 20,
         heading: 0
       });
   var camera3 = new Camera({
         position: {
-          x: 64,
-          y: 150,
-          z: 2800
+          x: -152.18,
+          y: 46.238,
+          z: 5000000
         },
-        tilt: 50,
-        heading: 270
+        tilt: 20,
+        heading:0
       });
   var homecam = new Camera({
         position: [
-          35,
-          138,
-           5500// elevation in meters
+          135.20,
+          23.20,
+          3000000// elevation in meters
         ],
-        tilt:0,
+        tilt:27,
         heading: 0
       });
   
@@ -77,7 +77,7 @@ var camera2 = new Camera({
       // Add the home button to the top left corner of the view
     view.ui.add(homeBtn, "top-left");
     
-    [COL,JAP, AK].forEach(function(button) {
+    [ALK,JAP, ETH].forEach(function(button) {
       button.style.display = 'flex';
       view.ui.add(button, 'top-right');
     });
@@ -90,17 +90,30 @@ var camera2 = new Camera({
         target:camera
       });
     });
-AK.addEventListener('click', function() {
+ETH.addEventListener('click', function() {
       // reuse the default camera position already established in the homeBtn
       view.goTo({
         target:camera2
       });
     });
-COL.addEventListener('click', function() {
+ALK.addEventListener('click', function() {
       // reuse the default camera position already established in the homeBtn
       view.goTo({
         target:camera3
       });
 });
- 
+ const layerList = new LayerList({
+          view: view,
+          listItemCreatedFunction: function(event) {
+            const item = event.item;
+            if (item.layer.type != "group") {
+              // don't show legend twice
+              item.panel = {
+                content: "legend",
+                open: true
+              };
+            }
+          }
+        });
+        view.ui.add(layerList, "bottom-right");
   });
